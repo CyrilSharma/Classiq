@@ -2,9 +2,8 @@ import scipy.integrate as integrate
 import math
 import numpy as np
 from scipy.optimize import minimize
-import time
 
-qubits = 8
+qubits = 7
 
 space = 1/(2**qubits+1) #set up initial conditions
 initial = []
@@ -42,7 +41,8 @@ def error(dists):
 
     data = [0.5 + sum(dists[:i]) for i in range (1, 2**qubits + 2)]
 
-    return integrate.quad(lambda x: l2norm(x, data), 0.5, 1.6)[0] #a, x1, x2, x3, b (using index 0 cause thats the actual value, 1 is the error)
+    result = integrate.quad(lambda x: l2norm(x, data), 0.5, 1.6) #a, x1, x2, x3, b (using index 0 cause thats the actual value, 1 is the error)
+    return result[0] + result[1]
 
 b = (0, 0.4) #set bounds
 bnds = []
@@ -57,6 +57,6 @@ initial = []
 for i in range (0, 2**qubits+1):
     initial.append(space)
 
-output = minimize(error, initial, options={"disp": True}, bounds = bnds, constraints=cons)
+output = minimize(error, initial, options={"disp": True}, method='SLSQP', bounds = bnds, constraints=cons)
 print(output.fun)
 print(output.x)
