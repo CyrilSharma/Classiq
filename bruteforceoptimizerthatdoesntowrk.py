@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import minimize
 import time
 
-qubits = 8
+qubits = 3
 
 space = 1/(2**qubits+1) #set up initial conditions
 initial = []
@@ -28,11 +28,15 @@ def p(x, rectPos): #should be 2**qubits + 1 things in rectPos
         for i in range(1, len(rectPos)):
             if x < rectPos[i]:
                 return (f(rectPos[i]) + f(rectPos[i-1]))/2
+        return 0
 
 print(f(1))
 print(p(1, data))
 
 def l2norm(x, rectPos):
+    # print(x)
+    # print(rectPos)
+    # print(p(x, rectPos))
     return math.sqrt((p(x, rectPos) - f(x))**2)
 
 def inequality_constraint(dists):
@@ -57,6 +61,26 @@ initial = []
 for i in range (0, 2**qubits+1):
     initial.append(space)
 
-output = minimize(error, initial, options={"disp": True}, bounds = bnds, constraints=cons)
-print(output.fun)
-print(output.x)
+minerror = 100
+for ax in range (0, 8):
+    print("ax")
+    for bx in range (0, 8):
+        print("bx")
+        for cx in range (0, 8):
+            print("cx")
+            for dx in range (0, 8):
+                for ex in range (0, 8):
+                    for fx in range (0, 8):
+                        for gx in range (0, 8):
+                            for hx in range (0, 8):
+                                for ix in range (0, 8):
+                                    data = [ax*1.1/64, bx*1.1/64, cx*1.1/64, dx*1.1/64, ex*1.1/64, fx*1.1/64, gx*1.1/64, hx*1.1/64, ix*1.1/64]
+                                    currenterror = error(data)
+                                    if currenterror < minerror:
+                                        minerror = currenterror
+                                
+print(minerror)
+
+#output = minimize(error, initial, options={"disp": True}, bounds = bnds, constraints=cons)
+#print(output.fun)
+#print(output.x)
